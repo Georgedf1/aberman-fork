@@ -5,6 +5,7 @@ import numpy as np
 from option_parser import try_mkdir
 from eval import eval
 import argparse
+import shutil
 
 
 def batch_copy(source_path, suffix, dest_path, dest_suffix=None):
@@ -13,11 +14,18 @@ def batch_copy(source_path, suffix, dest_path, dest_suffix=None):
 
     length = len('_{}.bvh'.format(suffix))
     for f in files:
+        # if dest_suffix is not None:
+        #     cmd = 'cp \"{}\" \"{}\"'.format(os.path.join(source_path, f), os.path.join(dest_path, f[:-length] + '_{}.bvh'.format(dest_suffix)))
+        # else:
+        #     cmd = 'cp \"{}\" \"{}\"'.format(os.path.join(source_path, f), os.path.join(dest_path, f[:-length] + '.bvh'))
+        # os.system(cmd)
         if dest_suffix is not None:
-            cmd = 'cp \"{}\" \"{}\"'.format(os.path.join(source_path, f), os.path.join(dest_path, f[:-length] + '_{}.bvh'.format(dest_suffix)))
+            src = os.path.join(source_path, f)
+            dst = os.path.join(dest_path, f[:-length] + '_{}.bvh'.format(dest_suffix))
         else:
-            cmd = 'cp \"{}\" \"{}\"'.format(os.path.join(source_path, f), os.path.join(dest_path, f[:-length] + '.bvh'))
-        os.system(cmd)
+            src = os.path.join(source_path, f)
+            dst = os.path.join(dest_path, f[:-length] + '.bvh')
+        shutil.copyfile(src, dst)
 
 
 if __name__ == '__main__':
@@ -59,7 +67,8 @@ if __name__ == '__main__':
     cross_error_mean = cross_error.mean()
     intra_error_mean = intra_error.mean()
 
-    os.system('rm -r %s' % pjoin(prefix, 'results/bvh'))
+    # os.system('rm -r %s' % pjoin(prefix, 'results/bvh'))
+    shutil.rmtree(pjoin(prefix, 'results/bvh'))
 
     print('Intra-retargeting error:', intra_error_mean)
     print('Cross-retargeting error:', cross_error_mean)

@@ -4,6 +4,7 @@ import copy
 from datasets.bvh_parser import BVH_file
 from datasets.motion_dataset import MotionData
 from option_parser import get_args, try_mkdir
+import shutil
 
 
 def collect_bvh(data_path, character, files):
@@ -44,8 +45,11 @@ def copy_std_bvh(data_path, character, files):
     """
     copy an arbitrary bvh file as a static information (skeleton's offset) reference
     """
-    cmd = 'cp \"{}\" ./datasets/Mixamo/std_bvhs/{}.bvh'.format(data_path + character + '/' + files[0], character)
-    os.system(cmd)
+    # cmd = 'cp \"{}\" ./datasets/Mixamo/std_bvhs/{}.bvh'.format(data_path + character + '/' + files[0], character)
+    # os.system(cmd)
+    src = data_path + character + '/' + files[0]
+    dst = './datasets/Mixamo/std_bvhs/{}.bvh'.format(character)
+    shutil.copyfile(src, dst)
 
 
 if __name__ == '__main__':
