@@ -21,7 +21,10 @@ def main():
         para_file.write(' '.join(sys.argv))
 
     dataset = create_dataset(args, characters)
-    # gf321: Windows handles multiprocessing differently (spawn vs fork), so use num_workers=0, otherwise refactor.
+    # gf321: Windows handles multiprocessing differently (spawn vs fork) so using num_workers=0 is the quick fix.
+    #  The 'proper' fix would be to move all .to(device) calls in the datasets to the training loop.
+    #  See https://pytorch.org/docs/stable/notes/multiprocessing.html for more details on CUDA and multiprocessing.
+    # Regardless, multiple workers is likely unnecessary as entire dataset fits in memory.
     data_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
 
     model = create_model(args, characters, dataset)
