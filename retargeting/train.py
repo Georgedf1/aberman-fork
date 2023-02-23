@@ -21,7 +21,8 @@ def main():
         para_file.write(' '.join(sys.argv))
 
     dataset = create_dataset(args, characters)
-    data_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=2)
+    # gf321: Windows handles multiprocessing differently (spawn vs fork), so use num_workers=0, otherwise refactor.
+    data_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
 
     model = create_model(args, characters, dataset)
 
